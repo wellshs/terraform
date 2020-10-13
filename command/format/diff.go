@@ -379,6 +379,12 @@ func (p *blockBodyDiffPrinter) writeNestedBlockDiffs(name string, blockS *config
 		return 0
 	}
 
+	// FIXME this is only for a prototype and not a good UX choice
+	if blockS.Sensitive {
+		p.buf.WriteString("(sensitive)")
+		return 0
+	}
+
 	// Where old/new are collections representing a nesting mode other than
 	// NestingSingle, we assume the collection value can never be unknown
 	// since we always produce the container for the nested objects, even if

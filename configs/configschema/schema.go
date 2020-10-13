@@ -33,6 +33,26 @@ type Block struct {
 	DescriptionKind StringKind
 
 	Deprecated bool
+
+	// These settings don't apply to top-level (resource) blocks and likely make
+	// more sense in NestedBlock
+	//
+	// Required, if set to true, specifies that an omitted or null value is not
+	// permitted.
+	Required bool
+
+	// Optional, if set to true, specifies that an omitted or null value is
+	// permitted. This field conflicts with Required.
+	Optional bool
+
+	// Computed, if set to true, specifies that the value comes from the
+	// provider rather than from configuration. If combined with Optional,
+	// then the config may optionally provide an overridden value.
+	Computed bool
+
+	// Sensitive, if set to true, indicates that the block may contain sensitive
+	// information.
+	Sensitive bool
 }
 
 // Attribute represents a configuration attribute, within a block.
@@ -62,11 +82,6 @@ type Attribute struct {
 
 	// Sensitive, if set to true, indicates that an attribute may contain
 	// sensitive information.
-	//
-	// At present nothing is done with this information, but callers are
-	// encouraged to set it where appropriate so that it may be used in the
-	// future to help Terraform mask sensitive information. (Terraform
-	// currently achieves this in a limited sense via other mechanisms.)
 	Sensitive bool
 
 	Deprecated bool

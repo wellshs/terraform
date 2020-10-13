@@ -326,6 +326,45 @@ func TestBlockDecoderSpec(t *testing.T) {
 			}),
 			0,
 		},
+		"explicitly required blocks": {
+			&Block{
+				Required: true,
+				BlockTypes: map[string]*NestedBlock{
+					"single": {
+						Nesting: NestingSingle,
+						Block:   Block{},
+					},
+				},
+			},
+			hcltest.MockBody(&hcl.BodyContent{
+				Blocks: hcl.Blocks{
+					&hcl.Block{
+						Type: "single",
+						Body: hcl.EmptyBody(),
+					},
+				},
+			}),
+			cty.ObjectVal(map[string]cty.Value{
+				"single": cty.EmptyObjectVal,
+			}),
+			0,
+		},
+		"missing explicitly required blocks": {
+			&Block{
+				Required: true,
+				BlockTypes: map[string]*NestedBlock{
+					"single": {
+						Nesting: NestingSingle,
+						Block:   Block{},
+					},
+				},
+			},
+			hcl.EmptyBody(),
+			cty.ObjectVal(map[string]cty.Value{
+				"single": cty.NullVal(cty.EmptyObject),
+			}),
+			1, // missing required block
+		},
 		"too many list items": {
 			&Block{
 				BlockTypes: map[string]*NestedBlock{

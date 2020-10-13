@@ -114,7 +114,7 @@ func (b *Block) DecoderSpec() hcldec.Spec {
 			ret[name] = &hcldec.BlockSpec{
 				TypeName: name,
 				Nested:   childSpec,
-				Required: blockS.MinItems == 1,
+				Required: b.Required || blockS.MinItems == 1,
 			}
 			if blockS.Nesting == NestingGroup {
 				ret[name] = &hcldec.DefaultSpec{

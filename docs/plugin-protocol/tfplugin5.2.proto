@@ -84,6 +84,10 @@ message Schema {
         string description = 4;
         StringKind description_kind = 5;
         bool deprecated = 6;
+        bool required = 7;
+        bool optional = 8;
+        bool computed = 9;
+        bool sensitive = 10;
     }
 
     message Attribute {
