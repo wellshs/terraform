@@ -139,6 +139,8 @@ require (
 
 replace k8s.io/client-go => k8s.io/client-go v0.0.0-20190620085101-78d2af792bab
 
+replace github.com/hashicorp/hcl/v2 => /Users/kristin/go/src/github.com/hashicorp/hcl
+
 go 1.14
 
 replace google.golang.org/grpc v1.31.1 => google.golang.org/grpc v1.27.1

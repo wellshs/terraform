@@ -6,6 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/hashicorp/hcl/v2/hcldec"
+	"github.com/zclconf/go-cty/cty"
 )
 
 var mapLabelNames = []string{"key"}
@@ -183,9 +184,24 @@ func (b *Block) DecoderSpec() hcldec.Spec {
 }
 
 func (a *Attribute) decoderSpec(name string) hcldec.Spec {
-	return &hcldec.AttrSpec{
+	ret := &hcldec.AttrSpec{
 		Name:     name,
-		Type:     a.Type,
 		Required: a.Required,
 	}
+	// If the Attribute is a nested block
+	if a.NestedBlock != nil {
+		if a.Type != cty.NilType {
+			panic("an attribute cannot have both a type and nested block")
+		}
+		if a.NestedBlock.Nesting != NestingSingle {
+			panic("also no!")
+		}
+		ret.Nested = a.NestedBlock.DecoderSpec()
+	}
+
+	if a.Type != cty.NilType {
+		ret.Type = a.Type
+	}
+
+	return ret
 }
