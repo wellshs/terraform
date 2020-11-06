@@ -62,7 +62,6 @@ func (s *Scope) EvalBlock(body hcl.Body, schema *configschema.Block) (cty.Value,
 	// any attribute in the schema that has a list-of-objects or set-of-objects
 	// kind to potentially be populated instead by one or more nested blocks
 	// whose type is the attribute name.
-
 	body = blocktoattr.FixUpBlockAttrs(body, schema)
 
 	val, evalDiags := hcldec.Decode(body, spec, ctx)

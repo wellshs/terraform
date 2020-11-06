@@ -435,37 +435,6 @@ func TestBlockDecoderSpec(t *testing.T) {
 			cty.EmptyObjectVal,
 			1, // extraneous attribute
 		},
-//		"nested-block type attribute": {
-		// 	&Block{
-		// 		Attributes: map[string]*Attribute{
-		// 			"optional": {
-		// 				NestedBlock: NestedBlock{
-		// 						Nesting:  NestingSingle,
-		// 						Block:    Block{},
-		// 					},
-		// 				},
-		// 				Optional: true,
-		// 			},
-		// 		},
-		// 	},
-		// 	hcltest.MockBody(&hcl.BodyContent{
-		// 		Attributes: hcl.Attributes{
-		// 			"optional": {
-		// 				Name: "foo",
-		// 				NestedBlock: NestedBlock{
-		// 					Nesting:  NestingSingle,
-		// 						Block:    hcl.EmptyBody(),,
-		// 					}
-		// 				}
-		// 			},
-		// 		},
-		// 	}),
-		// 	cty.ObjectVal(map[string]cty.Value{
-		// 		"optional":                     cty.NullVal(cty.Number),
-		// 		"required":                     cty.StringVal("5"), // converted from number to string
-		// 	},
-		// 	0,
-		// },
 	}
 
 	for name, test := range tests {

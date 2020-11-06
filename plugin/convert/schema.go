@@ -37,12 +37,8 @@ func ConfigSchemaToProto(b *configschema.Block) *proto.Schema_Block {
 		if err != nil {
 			panic(err)
 		}
-		attr.Type = ty
 
-		if a.NestedBlock != nil {
-			//nb := schemaNestedBlock(a.BlockTypes)
-			attr.NestedBlock = protoSchemaNestedBlock(a.NestedBlock.Description, a.NestedBlock)
-		}
+		attr.Type = ty
 
 		block.Attributes = append(block.Attributes, attr)
 	}
@@ -120,15 +116,8 @@ func ProtoToConfigSchema(b *proto.Schema_Block) *configschema.Block {
 			Deprecated:      a.Deprecated,
 		}
 
-		if a.Type != nil {
-			if err := json.Unmarshal(a.Type, &attr.Type); err != nil {
-				panic(err)
-			}
-		}
-
-		if a.NestedBlock != nil {
-			nb := schemaNestedBlock(a.NestedBlock)
-			attr.NestedBlock = nb
+		if err := json.Unmarshal(a.Type, &attr.Type); err != nil {
+			panic(err)
 		}
 
 		block.Attributes[a.Name] = attr
