@@ -38,6 +38,13 @@ func AssertPlanValid(schema *configschema.Block, priorState, config, plannedStat
 
 func assertPlanValid(schema *configschema.Block, priorState, config, plannedState cty.Value, path cty.Path) []error {
 	var errs []error
+
+	if schema.Computed && config.IsNull() {
+		// The provider is allowed to change the value of any computed
+		// attribute that isn't explicitly set in the config.
+		return errs
+	}
+
 	if plannedState.IsNull() && !config.IsNull() {
 		errs = append(errs, path.NewErrorf("planned for absense but config wants existence"))
 		return errs

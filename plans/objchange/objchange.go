@@ -25,21 +25,42 @@ import (
 // produce strange results with more "extreme" cases, such as a nested set
 // block where _all_ attributes are computed.
 func ProposedNewObject(schema *configschema.Block, prior, config cty.Value) cty.Value {
+	var new cty.Value
+
+	switch {
+	case schema.Computed && schema.Optional:
+		// This is the trickiest scenario: we want to keep the prior value
+		// if the config isn't overriding it. Note that due to some
+		// ambiguity here, setting an optional+computed attribute from
+		// config and then later switching the config to null in a
+		// subsequent change causes the initial config value to be "sticky"
+		// unless the provider specifically overrides it during its own
+		// plan customization step.
+		if config.IsNull() {
+			new = prior
+		} else {
+			new = config
+		}
+
+	case schema.Computed:
+		// configV will always be null in this case, by definition.
+		// priorV may also be null, but that's okay.
+		new = prior
+
 	// If the config and prior are both null, return early here before
 	// populating the prior block. The prevents non-null blocks from appearing
 	// the proposed state value.
-	if config.IsNull() && prior.IsNull() {
+	case config.IsNull() && prior.IsNull():
 		return prior
-	}
 
-	if prior.IsNull() {
+	case prior.IsNull():
 		// In this case, we will construct a synthetic prior value that is
 		// similar to the result of decoding an empty configuration block,
 		// which simplifies our handling of the top-level attributes/blocks
 		// below by giving us one non-null level of object to pull values from.
-		prior = AllAttributesNull(schema)
+		new = AllAttributesNull(schema)
 	}
-	return proposedNewObject(schema, prior, config)
+	return proposedNewObject(schema, new, config)
 }
 
 // PlannedDataResourceObject is similar to ProposedNewObject but tailored for

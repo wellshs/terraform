@@ -17,6 +17,10 @@ func ConfigSchemaToProto(b *configschema.Block) *proto.Schema_Block {
 		Description:     b.Description,
 		DescriptionKind: protoStringKind(b.DescriptionKind),
 		Deprecated:      b.Deprecated,
+		Optional:        b.Optional,
+		Computed:        b.Computed,
+		Required:        b.Required,
+		Sensitive:       b.Sensitive,
 	}
 
 	for _, name := range sortedKeys(b.Attributes) {
@@ -103,6 +107,10 @@ func ProtoToConfigSchema(b *proto.Schema_Block) *configschema.Block {
 		Description:     b.Description,
 		DescriptionKind: schemaStringKind(b.DescriptionKind),
 		Deprecated:      b.Deprecated,
+		Optional:        b.Optional,
+		Computed:        b.Computed,
+		Required:        b.Required,
+		Sensitive:       b.Sensitive,
 	}
 
 	for _, a := range b.Attributes {
