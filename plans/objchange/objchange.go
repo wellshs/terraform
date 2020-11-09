@@ -25,7 +25,7 @@ import (
 // produce strange results with more "extreme" cases, such as a nested set
 // block where _all_ attributes are computed.
 func ProposedNewObject(schema *configschema.Block, prior, config cty.Value) cty.Value {
-	var new cty.Value
+	new := config
 
 	switch {
 	case schema.Computed && schema.Optional:
@@ -38,8 +38,6 @@ func ProposedNewObject(schema *configschema.Block, prior, config cty.Value) cty.
 		// plan customization step.
 		if config.IsNull() {
 			new = prior
-		} else {
-			new = config
 		}
 
 	case schema.Computed:
@@ -51,7 +49,7 @@ func ProposedNewObject(schema *configschema.Block, prior, config cty.Value) cty.
 	// populating the prior block. The prevents non-null blocks from appearing
 	// the proposed state value.
 	case config.IsNull() && prior.IsNull():
-		return prior
+		new = prior
 
 	case prior.IsNull():
 		// In this case, we will construct a synthetic prior value that is
@@ -60,6 +58,7 @@ func ProposedNewObject(schema *configschema.Block, prior, config cty.Value) cty.
 		// below by giving us one non-null level of object to pull values from.
 		new = AllAttributesNull(schema)
 	}
+
 	return proposedNewObject(schema, new, config)
 }
 
